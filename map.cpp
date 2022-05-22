@@ -1,34 +1,41 @@
 #include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <ctime>
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 
-// Student°¡ µé¾î°¥ Dept¸¦ ¸¸µé°í ¿¬°á¸®½ºÆ®·Î ¸¸µê.
+// Studentê°€ ë“¤ì–´ê°ˆ Deptë¥¼ ë§Œë“¤ê³  ì—°ê²°ë¦¬ìŠ¤íŠ¸ë¡œ ë§Œë“¦.
 
 class Student {
 private:
 	string name;
-	vector<string> lecture;
+	vector<string> lecture;	// txtíŒŒì¼ ì²«ì§¸ì¤„ì—ì„œ ë°›ì•„ê°.
 	vector<int> score;
 	vector<bool> isMajor;
 
 public:
-	Student(string _name) :	name(_name) {}
-	Student() :	name("default") {}
+	Student(string _name) : name(_name) {}
+	Student() : name("default") {}
 
 	void setName(string name) {
 		this->name = name;
 	}
-	
+
 	void print() {
 		cout << name << endl;
 	}
 
-	void addGrade(string _lecture, int score_, bool isMajor_) {
-		lecture.push_back(_lecture);
+	void addGrade(int score_, bool isMajor_) {
 		score.push_back(score_);
 		isMajor.push_back(isMajor_);
+	}
+
+	void addLecture(string lec) {
+		lecture.push_back(lec);
 	}
 
 	void printGrades() {
@@ -50,31 +57,56 @@ public:
 			sum += score[i];
 		}
 		avg = sum / len;
-		cout << "Æò±Õ : " << avg;
+		cout << "í‰ê·  : " << avg;
 	}
 };
 
 
-// ¹è¿­ÀÇ ÇüÅÂÀÓ °á±¹, major¿Í score°¡ °°ÀÌ µé¾î°¬´Âµ¥? major°¡ ÀçÁ¤·ÄµÈ´Ù¸é?
-// ´Ù¸¥ °ú¸ñÀ» °¡¸®Å°°Ô µÉ ¼öµµ ÀÖ´Ù.
-// 1. °ú¸ñ¸íÀ¸·Î Àü°ø ºñÀü°øÀ» ÆÇ´ÜÇÏÀÚ. + key - Àü°ø¸í / value - Á¡¼ö
 
 int main() {
-	Student Park("Park");
-	Park.print();
-	Park.addGrade("DS", 90, true);
-	Park.addGrade("Meditation", 70, false);
-	Park.printGrades();
-	cout << "\n\n";
+	// ì¼ë‹¨ í•™ìƒ ì´ë¦„(15ëª…)ë¶€í„° ë°›ê³ , ê³¼ëª©ëª…(10ê°œ)ê³¼ ì „ê³µì—¬ë¶€ë¥¼ ì…ë ¥ë°›ìŒ. ê·¸ ë‹¤ìŒ 15x10ê°œì˜ ì„±ì  ëœë¤ ìƒì„±.
 
-	Student Kim;
-	cout << "\n";
-	Kim.setName("Ron");
-	Kim.print();
-	Kim.addGrade("OS", 85, true);
-	Kim.addGrade("CV", 70, true);
-	Kim.addGrade("Python", 95, true);
-	Kim.printGrades();
+	// 150x2 ì´ 300ê°œì˜ ì„±ì ì„ íƒ€ì´í•‘ìœ¼ë¡œ ì…ë ¥í•˜ëŠ” ê²ƒì€ ë‚­ë¹„ë¡œ ìƒê°ë˜ì–´,
+	// ì„±ì ì€ ë‚œìˆ˜ ìƒì„±ì— ë§¡ê¹€.
+	
+	
+	// ê³¼ëª©ëª… ì…ë ¥
+	int num_lec_1;
+	cout << "1í•™ê¸° ê³¼ëª© ê°œìˆ˜ ì…ë ¥(10 ì´ìƒ) >> ";
+	cin >> num_lec_1;
+		
+	for (int i = 0; i < num_lec_1; i++) {
+
+	}
+
+
+	// txt íŒŒì¼ ì¶œë ¥
+	ofstream fout("student.txt");
+	if (!fout) {
+		cout << "íŒŒì¼ ì—†ìŒ";
+		return 0;
+	}	
+	
+	srand(time(NULL));
+	
+	// ì„±ì ì„ txtë¡œ ì¶œë ¥í•œ ë‹¤ìŒ
+	fout << "Random Num" << endl;
+	for (int i = 0; i < 15; i++) {
+		for (int j = 0; j < num_lec_1; j++) {
+			int rn = rand() % 51 + 50;
+			fout << rn << "\t";
+		}
+		fout << endl;
+	}
+
+	fout << false;
+
+	fout << endl;
+
+	// txtë¥¼ ë¶ˆëŸ¬ì™€ì„œ ì„±ì ì— ëŒ€ì…í•˜ê¸°
+	
+
+	fout.close();
 
 	return 0;
 }
