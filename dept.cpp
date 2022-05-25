@@ -4,46 +4,72 @@ Dept::Dept() {};
 Dept::~Dept() {};
 
 void Dept::setStd(Subject sub, char sub_arr[][10], char info_arr[][10], int i) {
-	// ÇĞ»ıÀÇ ÀÌ¸§°ú ÇĞ¹øÀº ÆÄÀÏÀÇ 1~2¹øÂ° ¿­¿¡ Á¸Àç.
+	// í•™ìƒì˜ ì´ë¦„ê³¼ í•™ë²ˆì€ íŒŒì¼ì˜ 1~2ë²ˆì§¸ ì—´ì— ì¡´ì¬.
 	Student std;
 	std.setNameId(info_arr[0], stoi(info_arr[1]));
 
-	// ÇĞ»ıÀÇ Á¡¼ö°¡ °ú¸ñ°ú "°°Àº ¿­"¿¡ ±âÀÔµÇ´Â °ÍÀÌ ÀÏ¹İÀûÀÌ±â ¶§¹®¿¡
-	// Table Çü½ÄÀÇ ÅØ½ºÆ® ÆÄÀÏÀ» ÀĞ¾îµéÀÌ´Â ¹æ½ÄÀ» ¼±ÅÃÇÑ ÀÌ ÇÁ·Î±×·¥¿¡¼­´Â
-	// for¹®À» ÀÌ¿ëÇÑ ¼ºÀû ÀÔ·Â ¹æ¹ıÀÌ °¡Àå ¹Ù¶÷Á÷ÇÑ °ÍÀ¸·Î »ı°¢µÊ.
+	// í•™ìƒì˜ ì ìˆ˜ê°€ ê³¼ëª©ê³¼ "ê°™ì€ ì—´"ì— ê¸°ì…ë˜ëŠ” ê²ƒì´ ì¼ë°˜ì ì´ê¸° ë•Œë¬¸ì—
+	// Table í˜•ì‹ì˜ í…ìŠ¤íŠ¸ íŒŒì¼ì„ ì½ì–´ë“¤ì´ëŠ” ë°©ì‹ì„ ì„ íƒí•œ ì´ í”„ë¡œê·¸ë¨ì—ì„œëŠ”
+	// forë¬¸ì„ ì´ìš©í•œ ì„±ì  ì…ë ¥ ë°©ë²•ì´ ê°€ì¥ ë°”ëŒì§í•œ ê²ƒìœ¼ë¡œ ìƒê°ë¨.
 	for (int j = 2; j < i; j++) {
-		sub.setSub(sub_arr[j], stoi(info_arr[j]), sub.isMajorChk(sub_arr[j]));
+		sub.setSub(sub_arr[j], stoi(info_arr[j]), sub.isMajorChk(sub_arr[j]), sub.setGrade(stoi(info_arr[j])));
 		std.addSub(sub);
 	}
 	std_list.push_back(std);
 }
 
+// íŠ¹ì • í•™ìƒì˜ í‰ì ì„ êµ¬í•˜ëŠ” í•¨ìˆ˜
 void Dept::searchStd(string n) {
 	int size = std_list.size();
 	int target;
+
+	// ì´ë¦„ìœ¼ë¡œ í•™ìƒì„ ì°¾ê¸°
 	for (int i = 0; i < size; i++) {
 		if (std_list[i].getName() == n) {
 			target = i;
 			cout << std_list[i].getName() << " " << std_list[i].getID() << endl;
-			getSubRank_1p(std_list[i].getID());
+			
+			printGPA_1p(getGPA(i+1), i+1); // í‰ì ì„ êµ¬í•˜ëŠ” í•¨ìˆ˜
 		}
 	}
 }
 
 
-// Æ¯Á¤ ÇĞ»ıÀÇ °ú¸ñº° µî¼ö
-void Dept::getSubRank_1p(int s_id) {
-	vector<int> rank;
-	int size = std_list.size();	
-	int sub_size = std_list[s_id].sub_list.size();
-	for (int i = 0; i < size; i++) { // ÇĞ»ı ÀüºÎ ÀÌ°Å ¾Æ´Ô Ãà¼ÒÇÒ°Í. °ú¸ñ ÀüºÎ ´Ù ¼øÀ§ ¸Å±æ ÇÊ¿ä ¾øÀ½. ³»ÀÏ ÀÌ¾î¼­..
+// í‰ì ì„ ë‹´ì€ ë²¡í„°ë¥¼ ë°˜í™˜í•¨.
+map<int, float> Dept::getGPA(int s_id) {
+	map<int, float> gpaRank;	// í‰ì ì„ ë‹´ëŠ” ë²¡í„° ìƒì„±
+	int size = std_list.size();	// í•™ìƒ ìˆ˜
+	int sub_size = std_list[s_id].sub_list.size(); // ê³¼ëª© ìˆ˜ ! íŠ¹ì • í•™ìƒì˜ í•™ë²ˆì„ ì´ìš©í–ˆì§€ë§Œ ë‹¤ë¥¸ í•™ìƒë“¤ì˜ ì´ìˆ˜ ê³¼ëª© ìˆ˜ë„ ê°™ì€ ê²ƒìœ¼ë¡œ ê°€ì •í–ˆê¸° ë•Œë¬¸ì— ì‚¬ìš©.
+	for (int i = 0; i < size; i++) {
+		float sum = 0;
+
 		for (int j = 0; j < sub_size; j++) {
-			rank.push_back(std_list[i].sub_list[j].getScore());
+			sum += std_list[i].sub_list[j].getGrade();
 		}
+		gpaRank.insert({ i+1, (sum / sub_size) }); // í‰ì  vector ìƒì„±.
 	}
-
-	sort(rank.begin(), rank.end());
-	find(rank.begin(), rank.end(), )
-
+	return gpaRank;
 }
 
+
+// ì „ê³µ í‰ì  ë²¡í„° ë°˜í™˜ í•¨ìˆ˜ ì¶”ê°€
+
+bool cmp(pair<int, float> &a, pair<int, float> &b) {
+	if (a.second == b.second) 
+		return a.first < b.first;
+	return a.second > b.second;
+}
+
+
+// mapì€ keyê°’ì˜ ì¤‘ë³µì„ í—ˆìš©í•˜ì§€ ì•Šê¸° ë•Œë¬¸ì—, ì›ì†Œê°€ ì‚­ì œë˜ì–´ keyê°’ì„ ì¤‘ë³µì´ ì—†ëŠ” í•™ë²ˆìœ¼ë¡œ ì„¤ì •í•˜ì˜€ìŒ
+// í•™ìƒ 1ëª… í‰ì  ì¶œë ¥, ë“±ìˆ˜ ì¶œë ¥í•´ì•¼ë¨.
+void Dept::printGPA_1p(map<int, float> rank_arr, int s_id) {
+	vector<pair<int, float>> vec(rank_arr.begin(), rank_arr.end());
+	sort(vec.begin(), vec.end(), cmp);
+	int num = 1;
+	for (auto i : vec) {
+		cout << num << "ë“± : \t" << i.first << "\t" << i.second << endl;
+		num++;
+	}
+	
+}
