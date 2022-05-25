@@ -11,7 +11,7 @@ using namespace std;
 
 
 
-int main() {	
+int main() {
 	ifstream fin;
 	int sem;
 
@@ -40,7 +40,7 @@ int main() {
 
 	Dept mme;
 	Subject sub;
-	
+
 	int cnt = 0;
 	char s_Arr[100];
 	char sub_Arr[10][10];	// 과목명을 저장하는 배열
@@ -48,8 +48,8 @@ int main() {
 
 	char i_Arr[100];
 	char info_Arr[10][10]; // 이름과 ID, 점수를 불러들임. (초기화 필요)
-	
-	
+
+
 
 	while (fin.getline(buf, 100)) {
 		if (cnt == 0) {	// 불러들인 txt 파일의 첫 줄은 과목명을 표기한다.
@@ -79,19 +79,16 @@ int main() {
 			// vector에 학생의 정보 클래스를 push back하기 위해 만든 함수
 			mme.setStd(sub, sub_Arr, info_Arr, i);
 			cout << buf << endl;
-		}		
+		}
 		cnt++;	// 학번과 라인 넘버가 같다.
 	}
-	
+
 
 	fin.close();
 
 	int select;
 	string name;
 	int n;
-
-	
-	
 
 	while (true) {
 		cout << "\n\n----------하고자 하는 작업을 선택----------" << endl;
@@ -106,7 +103,7 @@ int main() {
 
 		switch (select) {
 		case 1:
-			cout << "성적을 확인하고자 하는 학생의 이름 or 학번 or 이름&학번 모두를 입력 > ";
+			cout << "성적을 확인하고자 하는 학생의 이름 입력 > ";
 			cin >> name;
 			mme.searchStd(name);
 			break;
@@ -116,6 +113,7 @@ int main() {
 			break;
 		default:
 			cout << "1 ~ 5 사이의 정수를 입력해주세요" << endl;
+			break;
 		}
 	}
 }
