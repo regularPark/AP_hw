@@ -23,8 +23,9 @@ public:
 	void searchStd(int id);
 	void searchStd(string name, int id);
 	map<int, float> getGPA(int s_id);
+	map<int, float> getMajorGPA(int s_id);
 	void getSubRank_1p(int s_id);;
-	
+
 	void printGPA(vector<float> rank);
-	void printGPA_1p(map<int, float> rank, int s_id);
+	void printGPA_1p(map<int, float> rank, map<int, float> mRank, int s_id);
 };
