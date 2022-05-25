@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>
 using namespace std;
 
 #include "student.h"
@@ -21,8 +22,9 @@ public:
 	void searchStd(string name);
 	void searchStd(int id);
 	void searchStd(string name, int id);
-
-	void getSubRank_1p(int s_id);
-
-
+	map<int, float> getGPA(int s_id);
+	void getSubRank_1p(int s_id);;
+	
+	void printGPA(vector<float> rank);
+	void printGPA_1p(map<int, float> rank, int s_id);
 };
