@@ -2,16 +2,20 @@
 #include <string>
 using namespace std;
 
-class Subject {	// °ú¸ñ Å¬·¡½º¿¡´Â °ú¸ñ¸í°ú Á¡¼ö°¡ ÀÔ·ÂµÊ.
+class Subject {	// ê³¼ëª© í´ëž˜ìŠ¤ì—ëŠ” ê³¼ëª©ëª…ê³¼ ì ìˆ˜ê°€ ìž…ë ¥ë¨.
 	string name;
 	int score;
 	bool isMajor;
+	float grade;
 public:
+
 	Subject();
 	~Subject();
 
-	void setSub(string name, int score, bool isMajor);
+	void setSub(string name, int score, bool isMajor, float grade);
 	bool isMajorChk(string name);
 	int getScore() { return this->score; }
+	float getGrade() { return this->grade; }
 	bool isMjr() { return this->isMajor; }
+	float setGrade(int score);
 };
