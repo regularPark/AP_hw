@@ -8,89 +8,23 @@ using namespace std;
 #include "student.h"
 #include "dept.h"
 #include "subject.h"
+#include "fileIn.h"
+
 
 
 int main() {
-	ifstream fin;
-	int sem;
-
-
+	
 	while (true) {
-		if (!fin) {
-			cout << "에러발생" << endl;
-		}
-		cout << "몇 학기? ( 1 / 2 ) > ";
-		cin >> sem;
+		Dept mme, m1, m2, mt;
 
-		if (sem == 1) {
-			fin.open("1st_semester.txt");
-			break;
-		}
-		else if (sem == 2) {
-			fin.open("2nd_semester.txt");
-			break;
-		}
-		else {
-			cout << "1 / 2 중에 성적을 확인하고 싶은 학기를 다시 입력해주세요 " << endl;
-		}
-	}
+		Subject sub;
+		fileIn hd;
 
-	cout << endl;
+		int select;
+		string name;
+		int n;
+		string sub_name;
 
-	Dept mme;
-	Subject sub;
-
-	int cnt = 0;
-	char s_Arr[100];
-	char sub_Arr[10][10];	// 과목명을 저장하는 배열
-	char buf[100];	// 불러들인 라인을 임시저장하는 buffer.
-
-	char i_Arr[100];
-	char info_Arr[10][10]; // 이름과 ID, 점수를 불러들임. (초기화 필요)
-
-
-
-	while (fin.getline(buf, 100)) {
-		if (cnt == 0) {	// 불러들인 txt 파일의 첫 줄은 과목명을 표기한다.
-			strcpy(s_Arr, buf);
-			char* ptr = strtok(s_Arr, "\t");
-			int i = 0;
-			while (ptr != NULL) {
-				strcpy(sub_Arr[i], ptr);
-				ptr = strtok(NULL, "\t");
-				i++;
-			} //strtok 함수로 \t을 기준으로 문자열을 잘라내 배열에 저장한다.
-			cout << buf << endl;
-			cout << endl;
-		}
-
-		else {
-			// 마찬가지로 2번째 줄의 문자열들을 잘라내어 배열에 넣음.
-			strcpy(i_Arr, buf);
-			char* ptr = strtok(i_Arr, "\t");
-			int i = 0;
-			while (ptr != NULL) {
-				strcpy(info_Arr[i], ptr);
-				ptr = strtok(NULL, "\t");
-				i++;
-			}
-
-			// vector에 학생의 정보 클래스를 push back하기 위해 만든 함수
-			mme.setStd(sub, sub_Arr, info_Arr, i);
-			cout << buf << endl;
-		}
-		cnt++;	// 학번과 라인 넘버가 같다.
-	}
-
-
-	fin.close();
-
-	int select;
-	string name;
-	int n;
-	string sub_name;
-
-	while (true) {
 		cout << "\n\n----------하고자 하는 작업을 선택----------" << endl;
 		cout << "1. 학생 1명의 등수 출력 / 전공 과목 등수 출력" << endl;
 		cout << "2. 입력한 과목의 상위 n명 성명 출력 " << endl;
@@ -103,30 +37,57 @@ int main() {
 		cin >> select;
 
 		switch (select) {
+
 		case 1:
+			cout << endl;
 			// 예외 : 이름이 없을 떄, 동명의 학생이 있을때-> 학번으로 검색하도록 유도. 전체 평점 같으면, 전공 평점 높은 사람 등수가 높음.
+			// 학기에 이름을 입력해버렸을 때
+			mme = hd.fileRead(hd.sem_in(), mme, sub);
 			cout << "성적을 확인하고자 하는 학생의 이름 입력 > ";
 			cin >> name;
 			mme.searchStd(name);
 			break;
+
 		case 2:
-			// 예외 처리 : 과목 없을 때, 등수가 0~15 사이의 정수가 아닐때 
+			cout << endl;
+
+			// 예외 처리 : 과목 없을 때, 등수가 0~15 사이의 정수가 아닐때  + 과목명 알려주기
+			mme = hd.fileRead(hd.sem_in(), mme, sub);
+			cout << "과목명 : ";
 			cout << "과목 이름을 입력 > ";
 			cin >> sub_name;
 			cout << "알고 싶은 등수를 입력 > ";
 			cin >> n;
 			mme.searchNrank(sub_name, n);
 			break;
+
 		case 3:
-			cout << "-----------전체 등수-----------";
+			cout << endl;
+			m1 = hd.fileRead(hd.firstSem(), m1, sub);	// 1학기 성적 Dept
+			m2 = hd.fileRead(hd.secondSem(), m2, sub);	// 2학기 성적 Dept
+
+			cout << "--------전체 학기 석차--------" << endl;
+
+			mt = hd.fileRead(hd.firstSem(), mt, sub);
+			mt.getTotalRank(m1.getGPA(1), m2.getGPA(1), m1.getMajorGPA(1), m2.getMajorGPA(1));
+			
 			break;
+
 		case 4:
-			cout << "----------학기별 등수----------";
+			mme = hd.fileRead(hd.sem_in(), mme, sub);
+
+			cout << hd.getSem() << "학기 성적" << endl;
+			mme.showSemRank();
+
 			break;
+
 		case 5:
+			cout << "학생의 이름을 입력 > ";
+			cin >> name;
 
 		case 6:
-			
+			exit(1);
+
 		default:
 			cout << "1 ~ 6 사이의 정수를 입력해주세요" << endl;
 			break;
