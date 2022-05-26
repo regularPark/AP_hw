@@ -88,7 +88,7 @@ void Dept::printGPA_1p(map<int, float> rank_arr, map<int, float> m_rank_arr, int
 
 	sort(vec.begin(), vec.end(), cmp);
 	sort(mVec.begin(), mVec.end(), cmp);
-	
+
 	int num = 1;
 	int m_num = 1;
 	for (auto i : vec) {
@@ -96,7 +96,7 @@ void Dept::printGPA_1p(map<int, float> rank_arr, map<int, float> m_rank_arr, int
 			cout << "전체 학점 석차 " << num << "등\t" << "학기 평점 : " << i.second << endl;
 		num++;
 	}
-	
+
 	for (auto i : mVec) {
 		if (i.first == s_id)
 			cout << "전공 학점 석차 " << m_num << "등\t" << "학기 전공 평점 : " << i.second << endl;
@@ -110,17 +110,17 @@ void Dept::searchNrank(string sub_name, int n) {
 	int size = std_list.size();
 	int sub_size = std_list[n - 1].sub_list.size();
 	map<int, float> sub_score;	// 학번과 성적을 담는 map 생성
-	
+
 	// 과목명으로 성적 찾기
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < sub_size; j++) {
 			if (std_list[i].sub_list[j].getSubName() == sub_name) {
 				sub_score.insert({ std_list[i].getID(), std_list[i].sub_list[j].getScore() });
 			}
-		}		
+		}
 	}
 	printSubRank(sub_score, n);
-	
+
 }
 
 // 
@@ -133,7 +133,76 @@ void Dept::printSubRank(map<int, float> sub_score, int n) {
 	int num = 1;
 	for (auto i : vec) {
 		if (num <= n)
-			cout << num << "등\t" << std_list[i.first - 1].getName() << endl;
+			cout << num << "등\t" << std_list[i.first - 1].getName() << " " << std_list[i.first - 1].getID() << endl;
 		num++;
+	}
+}
+
+// 학기별 등수 출력 - 기존에 만들어 둔 평점을 담는 map을 사용
+void Dept::showSemRank() {
+	printGPA(getGPA(1), getMajorGPA(1));
+}
+
+
+// 한 학기의 석차와 전공 석차를 매기기 위해 map -> vector로 변환
+void Dept::printGPA(map<int, float> rank_arr, map<int, float> m_rank_arr) {
+	
+	
+	vector<pair<int, float>> vec(rank_arr.begin(), rank_arr.end());
+	vector<pair<int, float>> mVec(m_rank_arr.begin(), m_rank_arr.end());
+
+	sort(vec.begin(), vec.end(), cmp);
+	sort(mVec.begin(), mVec.end(), cmp);
+
+	int num = 1;
+	int m_num = 1;
+	
+	cout << "--------해당 학기 석차--------" << endl;
+	for (auto i : vec) {
+		cout << "\t" << num << "등\t" << std_list[i.first - 1].getName() << " " << std_list[i.first - 1].getID() << endl;
+		num++;
+	}
+
+	cout << "\n\n";
+
+	cout << "--------전공 학점 석차--------" << endl;
+	for (auto i : mVec) {
+		cout << "\t" << m_num << "등\t" << std_list[i.first - 1].getName() << " " << std_list[i.first - 1].getID() << endl;
+		m_num++;
+	}
+}
+
+
+
+void Dept::getTotalRank(map<int, float> gpa_1, map<int, float> gpa_2, map<int, float> m_gpa_1, map<int, float> m_gpa_2) {
+	map<int, float> gpa;
+	map<int, float> m_gpa;
+	int size = gpa_1.size();
+
+	for (int i = 0; i < size; i++) {
+		gpa.insert({ i+1, (gpa_1.at(i+1) + gpa_2.at(i+1)) / 2 });
+		m_gpa.insert({ i+1, (m_gpa_1.at(i+1) + m_gpa_2.at(i+1)) / 2 });
+	}
+
+	vector<pair<int, float>> vec(gpa.begin(), gpa.end());
+	vector<pair<int, float>> mVec(m_gpa.begin(), m_gpa.end());
+
+	sort(vec.begin(), vec.end(), cmp);
+	sort(mVec.begin(), mVec.end(), cmp);
+
+	int num = 1;
+	int m_num = 1;
+
+	for (auto i : vec) {
+		cout << "\t" << num << "등\t" << std_list[i.first - 1].getName() << " " << std_list[i.first - 1].getID() << endl;
+		num++;
+	}
+
+	cout << "\n\n";
+
+	cout << "--------전공 학점 석차--------" << endl;
+	for (auto i : mVec) {
+		cout << "\t" << m_num << "등\t" << std_list[i.first - 1].getName() << " " << std_list[i.first - 1].getID() << endl;
+		m_num++;
 	}
 }
