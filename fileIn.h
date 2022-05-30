@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <fstream>
 #include <iostream>
+#include <typeinfo>
 using namespace std;
 
 #include "dept.h"
