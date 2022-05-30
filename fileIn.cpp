@@ -3,30 +3,34 @@
 
 ifstream fileIn::sem_in() {
 	ifstream fin;
-	int sem;
 
-	while (true) {
+	while (sem != 1 || sem != 2) {
+		string sem;
+
 		if (!fin) {
-			cout << "¿¡·¯¹ß»ý" << endl;
+			cout << "ì—ëŸ¬ë°œìƒ" << endl;
 		}
-		cout << "ÇÐ±â ÀÔ·Â ( 1 / 2 ) > ";
+
+		cout << "í•™ê¸° ìž…ë ¥ ( 1 / 2 ) > ";
 		cin >> sem;
 
-		if (sem == 1) {
+		if (sem == "1") {
 			setSem(1);
 			fin.open("1st_semester.txt");
 			break;
 		}
-		else if (sem == 2) {
+		else if (sem == "2") {
 			setSem(2);
 			fin.open("2nd_semester.txt");
 			break;
 		}
-		else {
-			cout << "1 / 2 Áß¿¡ ¼ºÀûÀ» È®ÀÎÇÏ°í ½ÍÀº ÇÐ±â¸¦ ´Ù½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä " << endl;
-		}
+	
+
+		cout << "í™•ì¸í•˜ê³ ìž í•˜ëŠ” í•™ê¸°ë¥¼ ì •í™•ížˆ ìž…ë ¥í•´ì£¼ì„¸ìš”.\n";
 	}
+
 	cout << endl;
+	
 	return fin;
 }
 
@@ -46,14 +50,14 @@ Dept fileIn::fileRead(ifstream fin, Dept mme, Subject sub) {
 
 	int cnt = 0;
 	char s_Arr[100];
-	char sub_Arr[10][10];	// °ú¸ñ¸íÀ» ÀúÀåÇÏ´Â ¹è¿­
-	char buf[100];	// ºÒ·¯µéÀÎ ¶óÀÎÀ» ÀÓ½ÃÀúÀåÇÏ´Â buffer.
+	char sub_Arr[10][10];	// ê³¼ëª©ëª…ì„ ì €ìž¥í•˜ëŠ” ë°°ì—´
+	char buf[100];	// ë¶ˆëŸ¬ë“¤ì¸ ë¼ì¸ì„ ìž„ì‹œì €ìž¥í•˜ëŠ” buffer.
 
 	char i_Arr[100];
-	char info_Arr[10][10]; // ÀÌ¸§°ú ID, Á¡¼ö¸¦ ºÒ·¯µéÀÓ. (ÃÊ±âÈ­ ÇÊ¿ä)
+	char info_Arr[10][10]; // ì´ë¦„ê³¼ ID, ì ìˆ˜ë¥¼ ë¶ˆëŸ¬ë“¤ìž„. (ì´ˆê¸°í™” í•„ìš”)
 
 	while (fin.getline(buf, 100)) {
-		if (cnt == 0) {	// ºÒ·¯µéÀÎ txt ÆÄÀÏÀÇ Ã¹ ÁÙÀº °ú¸ñ¸íÀ» Ç¥±âÇÑ´Ù.
+		if (cnt == 0) {	// ë¶ˆëŸ¬ë“¤ì¸ txt íŒŒì¼ì˜ ì²« ì¤„ì€ ê³¼ëª©ëª…ì„ í‘œê¸°í•œë‹¤.
 			strcpy(s_Arr, buf);
 			char* ptr = strtok(s_Arr, "\t");
 			int i = 0;
@@ -61,11 +65,11 @@ Dept fileIn::fileRead(ifstream fin, Dept mme, Subject sub) {
 				strcpy(sub_Arr[i], ptr);
 				ptr = strtok(NULL, "\t");
 				i++;
-			} //strtok ÇÔ¼ö·Î \tÀ» ±âÁØÀ¸·Î ¹®ÀÚ¿­À» Àß¶ó³» ¹è¿­¿¡ ÀúÀåÇÑ´Ù.
+			} //strtok í•¨ìˆ˜ë¡œ \tì„ ê¸°ì¤€ìœ¼ë¡œ ë¬¸ìžì—´ì„ ìž˜ë¼ë‚´ ë°°ì—´ì— ì €ìž¥í•œë‹¤.
 		}
 
 		else {
-			// ¸¶Âù°¡Áö·Î 2¹øÂ° ÁÙÀÇ ¹®ÀÚ¿­µéÀ» Àß¶ó³»¾î ¹è¿­¿¡ ³ÖÀ½.
+			// ë§ˆì°¬ê°€ì§€ë¡œ 2ë²ˆì§¸ ì¤„ì˜ ë¬¸ìžì—´ë“¤ì„ ìž˜ë¼ë‚´ì–´ ë°°ì—´ì— ë„£ìŒ.
 			strcpy(i_Arr, buf);
 			char* ptr = strtok(i_Arr, "\t");
 			int i = 0;
@@ -75,10 +79,10 @@ Dept fileIn::fileRead(ifstream fin, Dept mme, Subject sub) {
 				i++;
 			}
 
-			// vector¿¡ ÇÐ»ýÀÇ Á¤º¸ Å¬·¡½º¸¦ push backÇÏ±â À§ÇØ ¸¸µç ÇÔ¼ö
+			// vectorì— í•™ìƒì˜ ì •ë³´ í´ëž˜ìŠ¤ë¥¼ push backí•˜ê¸° ìœ„í•´ ë§Œë“  í•¨ìˆ˜
 			mme.setStd(sub, sub_Arr, info_Arr, i);
 		}
-		cnt++;	// ÇÐ¹ø°ú ¶óÀÎ ³Ñ¹ö°¡ °°´Ù.
+		cnt++;	// í•™ë²ˆê³¼ ë¼ì¸ ë„˜ë²„ê°€ ê°™ë‹¤.
 	}
 
 	fin.close();
