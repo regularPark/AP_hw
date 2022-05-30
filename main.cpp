@@ -3,12 +3,14 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <typeinfo>
 using namespace std;
 
 #include "student.h"
 #include "dept.h"
 #include "subject.h"
 #include "fileIn.h"
+
 
 
 
@@ -45,6 +47,7 @@ int main() {
 			mme = hd.fileRead(hd.sem_in(), mme, sub);
 			cout << "성적을 확인하고자 하는 학생의 이름 입력 > ";
 			cin >> name;
+			
 			mme.searchStd(name);
 			break;
 
@@ -53,12 +56,10 @@ int main() {
 
 			// 예외 처리 : 과목 없을 때, 등수가 0~15 사이의 정수가 아닐때  + 과목명 알려주기
 			mme = hd.fileRead(hd.sem_in(), mme, sub);
-			cout << "과목명 : ";
-			cout << "과목 이름을 입력 > ";
-			cin >> sub_name;
-			cout << "알고 싶은 등수를 입력 > ";
-			cin >> n;
-			mme.searchNrank(sub_name, n);
+			
+			cout << "검색할 수 있는 과목명 : ";
+
+			mme.searchNrank();	// 과목별 등수를 구하는 함수
 			break;
 
 		case 3:
@@ -82,9 +83,45 @@ int main() {
 			break;
 
 		case 5:
+			int s_id;
+
+			cout << endl;
+			m1 = hd.fileRead(hd.firstSem(), m1, sub);	// 1학기 성적 배열
+			m2 = hd.fileRead(hd.secondSem(), m2, sub);	// 2학기 성적 배열
+
 			cout << "학생의 이름을 입력 > ";
 			cin >> name;
 
+			mt = hd.fileRead(hd.firstSem(), mt, sub);	// 1~2학기 모든 성적을 담을 클래스
+			
+			
+
+			cout << endl;
+			// 1학기 성적 출력
+			s_id = m1.searchStd(name);
+			cout << "----------------1학기 성적----------------" << endl;
+
+			// 2학기 성적 출력
+			// 첫번째에서 출력과 동시에 int를 리턴해서 동명이인의 경우 학번으로 바로 2학기 성적을 확인할수있도록함.
+			m2.searchSid(s_id);
+			cout << "----------------2학기 성적----------------" << endl;
+
+			// 개별 과목 성적
+			// 1학기 과목이름
+			cout << endl;
+			m1.printSubName();
+			m1.printGPA_(s_id);
+			cout << endl;
+
+			m2.printSubName();
+			m2.printGPA_(s_id);
+
+
+			// 전체 성적 출력
+
+			mt.getTotalRank_1p(m1.getGPA(1), m2.getGPA(1), m1.getMajorGPA(1), m2.getMajorGPA(1), s_id);
+
+			break;
 		case 6:
 			exit(1);
 
