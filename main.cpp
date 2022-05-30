@@ -35,7 +35,7 @@ int main() {
 		cout << "5. 학생 1명의 개별 과목 성적, 학기 평점, 총 평점 출력" << endl;
 		cout << "6. 종료" << endl;
 		cout << endl;
-		cout << "실행하고자 하는 기능의 번호 입력(1 ~ 5 사이의 정수) > ";
+		cout << "실행하고자 하는 기능의 번호 입력(1 ~ 6 사이의 정수) > ";
 		cin >> select;
 
 		switch (select) {
@@ -45,10 +45,9 @@ int main() {
 			// 예외 : 이름이 없을 떄, 동명의 학생이 있을때-> 학번으로 검색하도록 유도. 전체 평점 같으면, 전공 평점 높은 사람 등수가 높음.
 			// 학기에 이름을 입력해버렸을 때
 			mme = hd.fileRead(hd.sem_in(), mme, sub);
-			cout << "성적을 확인하고자 하는 학생의 이름 입력 > ";
-			cin >> name;
 			
-			mme.searchStd(name);
+			
+			mme.searchStd();
 			break;
 
 		case 2:
@@ -89,22 +88,19 @@ int main() {
 			m1 = hd.fileRead(hd.firstSem(), m1, sub);	// 1학기 성적 배열
 			m2 = hd.fileRead(hd.secondSem(), m2, sub);	// 2학기 성적 배열
 
-			cout << "학생의 이름을 입력 > ";
-			cin >> name;
-
 			mt = hd.fileRead(hd.firstSem(), mt, sub);	// 1~2학기 모든 성적을 담을 클래스
 			
 			
 
 			cout << endl;
 			// 1학기 성적 출력
-			s_id = m1.searchStd(name);
+			s_id = m1.searchStd(); // 이름 오타 난 다음 학번으로 찾을 때 int 값 넘어오는게 이상하다!...
 			cout << "----------------1학기 성적----------------" << endl;
 
 			// 2학기 성적 출력
 			// 첫번째에서 출력과 동시에 int를 리턴해서 동명이인의 경우 학번으로 바로 2학기 성적을 확인할수있도록함.
 			m2.searchSid(s_id);
-			cout << "----------------2학기 성적----------------" << endl;
+			cout << "----------------2학기 성적----------------\n" << endl;
 
 			// 개별 과목 성적
 			// 1학기 과목이름
@@ -115,7 +111,8 @@ int main() {
 
 			m2.printSubName();
 			m2.printGPA_(s_id);
-
+			cout << "--------------------------------전체 성적--------------------------------\n";
+			cout << endl;
 
 			// 전체 성적 출력
 
