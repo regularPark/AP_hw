@@ -1,23 +1,21 @@
-#include "student.h"
+#pragma once
+#include <string>
+#include <vector>
+using namespace std;
 
-Student::Student() { this->name = "Nobody"; }
+#include "subject.h"
 
-Student::~Student() {};
+class Student {
+	string name;
+	int id;
+public:
+	vector<Subject> sub_list;
 
-void Student::setNameId(string name, int id) {
-	this->name = name;
-	this->id = id;
-}
+	Student();
+	~Student();
 
-void Student::addSub(Subject sub) {
-	sub_list.push_back(sub);
-}
-
-string Student::getName() {
-	return this->name;
-}
-
-int Student::getID() {
-	return this->id;
-}
-
+	void setNameId(string name, int id);
+	void addSub(Subject sub);
+	string getName();
+	int getID();
+};
