@@ -3,6 +3,7 @@
 Dept::Dept() {};
 Dept::~Dept() {};
 
+
 // 학생의 이름, 학번, 과목명과 원점수, 전공 여부, 환산 점수를 set하는 함수
 void Dept::setStd(Subject sub, char sub_arr[][10], char info_arr[][10], int i) {
 	// 학생의 이름과 학번은 파일의 1~2번째 열에 존재.
@@ -13,20 +14,64 @@ void Dept::setStd(Subject sub, char sub_arr[][10], char info_arr[][10], int i) {
 	// Table 형식의 텍스트 파일을 읽어들이는 방식을 선택한 이 프로그램에서는
 	// for문을 이용한 성적 입력 방법이 가장 바람직한 것으로 생각됨.
 	for (int j = 2; j < i; j++) {
-		sub.setSub(sub_arr[j], stoi(info_arr[j]), sub.isMajorChk(sub_arr[j]), sub.setGrade(stoi(info_arr[j])));
+		sub.setSub(sub_arr[j], stoi(info_arr[j]), sub.isMajorChk(sub_arr[j]), sub.setGrade(stoi(info_arr[j])), sub.setGPAgrade(stoi(info_arr[j])));
 		std.addSub(sub);
 	}
 	std_list.push_back(std);
 }
 
-// 특정 학생의 이름을 매개변수로 받은 후 평점을 구하는 함수
-void Dept::searchStd(string n) {
-	int size = std_list.size();
-	int target;
 
+// 특정 학생의 이름을 매개변수로 받은 후 평점을 구하는 함수
+int Dept::searchStd(string n) {
+	int size = std_list.size();
+	int fName = 0; // 이름이 같은 학생의 수를 카운팅하는 변수
+	int target = 0;
 	// 이름으로 학생을 찾기
 	for (int i = 0; i < size; i++) {
 		if (std_list[i].getName() == n) {
+			fName++;
+			target = i;
+		}
+	}
+
+	if (fName == 0) {
+		string name;
+		
+		cout << "\n존재하지 않는 학생입니다. 다시 입력해주세요. > ";
+		cin >> name;
+		searchStd(name);
+	}
+
+	else if (fName == 1) {
+		int s_id = std_list[target].getID();
+		cout << "\n이름 : " << std_list[target].getName() << "\t학번 :" << std_list[target].getID() << endl; 
+		printGPA_1p(getGPA(target + 1), getMajorGPA(target + 1), target + 1); // 평점을 구하는 함수
+		return s_id;
+	}
+	else if (fName > 1) {
+		int s_id;
+
+		cout << "\n이름이 같은 학생이 두 명 이상입니다. " << endl;
+		for (int i = 0; i < size; i++) {
+			if (std_list[i].getName() == n) {
+				cout << "\n이름 : " << std_list[i].getName() << "\t학번 :" << std_list[i].getID() << endl;
+			}
+		}
+		cout << "\n성적을 확인할 학생의 학번을 입력 > ";
+		cin >> s_id;
+		searchSid(s_id);
+		return s_id;
+
+	}
+
+}
+
+//학번으로 학생을 찾는 함수
+void Dept::searchSid(int s_id) {
+	int size = std_list.size();
+	// 학번으로 학생을 찾기
+	for (int i = 0; i < size; i++) {
+		if (std_list[i].getID() == s_id) {
 			cout << "\n이름 : " << std_list[i].getName() << "\t학번 :" << std_list[i].getID() << endl;
 
 			printGPA_1p(getGPA(i + 1), getMajorGPA(i + 1), i + 1); // 평점을 구하는 함수
@@ -51,7 +96,7 @@ map<int, float> Dept::getGPA(int s_id) {
 }
 
 
-// 전공 평점 벡터 반환 함수 추가
+// 전공 평점 구하는 함수
 map<int, float> Dept::getMajorGPA(int s_id) {
 	map<int, float> mGpaRank;	// 평점을 담는 벡터 생성
 	int size = std_list.size();	// 학생 수
@@ -106,21 +151,62 @@ void Dept::printGPA_1p(map<int, float> rank_arr, map<int, float> m_rank_arr, int
 
 
 // 과목별 상위 n명의 이름 출력하는 기능
-void Dept::searchNrank(string sub_name, int n) {
-	int size = std_list.size();
-	int sub_size = std_list[n - 1].sub_list.size();
-	map<int, float> sub_score;	// 학번과 성적을 담는 map 생성
+void Dept::searchNrank() {
+	string sub_name;
+	int n;
+	
 
+	int size = std_list.size();
+	int sub_size = std_list[0].sub_list.size();
+	map<int, float> sub_score;	// 학번과 성적을 담는 map 생성
+		
+
+	// 과목을 찾을 수 있도록 과목명 출력
+	for (int j = 0; j < sub_size; j++) {
+			cout << std_list[0].sub_list[j].getSubName().substr(0, std_list[0].sub_list[j].getSubName().length() - 2) << "     ";
+	}
+	
+	cout << "\n\n석차를 확인할 과목 이름을 입력 > ";
+	while (true) {	// 과목명을 잘못 입력했을때의 예외처리.
+		cin >> sub_name;
+		bool isExist = false;
+		for (int j = 0; j < sub_size; j++) {
+			if (std_list[0].sub_list[j].getSubName().substr(0, std_list[0].sub_list[j].getSubName().length() - 2) == sub_name) {
+				isExist = true;
+				break;
+			}
+		}
+		if (isExist) break;
+		
+		cout << "과목명을 확인 후 올바른 과목명을 재입력해주세요." << endl;
+		for (int j = 0; j < sub_size; j++) {
+			cout << std_list[0].sub_list[j].getSubName().substr(0, std_list[0].sub_list[j].getSubName().length() - 2) << "     ";
+		}
+		cout << "\n석차를 확인할 과목 이름을 입력 > ";
+	}
+	cout << endl;
+
+	cout << "상위 n명 중 알고 싶은 n을 입력 > ";
+	while (true) {
+		cin >> n;
+		if (n < 1 || n > 15) {
+			cout << "\n1 ~ 15 사이의 석차를 입력 > ";
+		}
+		else break;
+	}
+	
+	cout << "\n----------상위 " << n << "명 명단----------" << endl;
+	
+	
 	// 과목명으로 성적 찾기
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < sub_size; j++) {
-			if (std_list[i].sub_list[j].getSubName() == sub_name) {
+			if (std_list[i].sub_list[j].getSubName().substr(0, std_list[i].sub_list[j].getSubName().length() - 2) == sub_name) {
 				sub_score.insert({ std_list[i].getID(), std_list[i].sub_list[j].getScore() });
 			}
 		}
 	}
 	printSubRank(sub_score, n);
-
 }
 
 // 
@@ -133,7 +219,7 @@ void Dept::printSubRank(map<int, float> sub_score, int n) {
 	int num = 1;
 	for (auto i : vec) {
 		if (num <= n)
-			cout << num << "등\t" << std_list[i.first - 1].getName() << " " << std_list[i.first - 1].getID() << endl;
+			cout << "\t" << num << "등\t" << std_list[i.first - 1].getName() << " " << std_list[i.first - 1].getID() << endl;
 		num++;
 	}
 }
@@ -200,9 +286,71 @@ void Dept::getTotalRank(map<int, float> gpa_1, map<int, float> gpa_2, map<int, f
 
 	cout << "\n\n";
 
+	
 	cout << "--------전공 학점 석차--------" << endl;
 	for (auto i : mVec) {
 		cout << "\t" << m_num << "등\t" << std_list[i.first - 1].getName() << " " << std_list[i.first - 1].getID() << endl;
 		m_num++;
 	}
+}
+
+
+void Dept::getTotalRank_1p(map<int, float> gpa_1, map<int, float> gpa_2, map<int, float> m_gpa_1, map<int, float> m_gpa_2, int s_id) {
+	map<int, float> gpa;
+	map<int, float> m_gpa;
+	int size = gpa_1.size();
+
+	for (int i = 0; i < size; i++) {
+		gpa.insert({ i + 1, (gpa_1.at(i + 1) + gpa_2.at(i + 1)) / 2 });
+		m_gpa.insert({ i + 1, (m_gpa_1.at(i + 1) + m_gpa_2.at(i + 1)) / 2 });
+	}
+
+	vector<pair<int, float>> vec(gpa.begin(), gpa.end());
+	vector<pair<int, float>> mVec(m_gpa.begin(), m_gpa.end());
+
+	sort(vec.begin(), vec.end(), cmp);
+	sort(mVec.begin(), mVec.end(), cmp);
+
+
+	cout << endl;
+	for (auto i : vec) {
+		if (std_list[i.first - 1].getID() == s_id) {
+			cout << "전체 학기 평점(교양 포함) : " << i.second << endl;
+		}
+		
+	}
+	cout << "--------전체 학기 평점--------" << endl;
+
+
+	cout << "\n\n";
+
+
+	for (auto i : mVec) {
+		if (std_list[i.first - 1].getID() == s_id) {
+			cout << "전체 학기 전공 평점 : " << i.second << endl;
+		}
+	}
+	cout << "--------전체 전공 평점--------" << endl;
+
+}
+
+
+// 5번 기능을 위해 과목명을 출력함
+void Dept::printSubName() {
+	int sub_size = std_list[0].sub_list.size();
+
+	// 과목을 찾을 수 있도록 과목명 출력
+	for (int j = 0; j < sub_size; j++) {
+		cout << std_list[0].sub_list[j].getSubName().substr(0, std_list[0].sub_list[j].getSubName().length() - 2) << "\t\t";
+	}
+	cout << endl;
+}
+
+void Dept::printGPA_(int s_id) {
+	int sub_size = std_list[0].sub_list.size();
+	// 과목별 원점수와 학점을 출력
+	for (int j = 0; j < sub_size; j++) {
+		cout << std_list[s_id - 1].sub_list[j].getGPA() << "\t\t";
+	}
+	cout << endl;
 }
